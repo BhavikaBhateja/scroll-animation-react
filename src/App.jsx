@@ -76,7 +76,7 @@ function App() {
 
       <div className="hero-section">
         <img
-          src="/Homepage - Ariostea_files/ar-showroom_ariostea-castellarano-it-09_2024-ref3_part17-building_exhibition_tiles.jpg"
+          src="/ar-showroom_ariostea-castellarano-it-09_2024-ref3_part17-building_exhibition_tiles.jpg"
           alt="Hero"
         />
       </div>
