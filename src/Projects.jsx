@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import './Projects.css'
 
-/* ───────────────────────────────────────────── */
-/* Scroll-Triggered Title Animation             */
-/* ───────────────────────────────────────────── */
+
 function ScrollFillTitle({ title }) {
   const [progress, setProgress] = useState(0)
   const titleRef = useRef(null)
@@ -93,9 +91,7 @@ function ScrollFillTitle({ title }) {
   )
 }
 
-/* ───────────────────────────────────────────── */
-/* Projects Section                             */
-/* ───────────────────────────────────────────── */
+
 function Projects() {
   const projects = [
     {

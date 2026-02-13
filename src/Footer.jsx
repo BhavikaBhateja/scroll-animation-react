@@ -19,12 +19,9 @@ const Footer = () => {
       const rect = footerRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight;
 
-      // Footer tab visible hota hai jab rect.top < windowHeight
-      // Hum progress tab shuru karte hain jab footer ka 20% visible ho
-      // aur sirf windowHeight ka 35% scroll range use karte hain
-      // → animation jaldi complete hogi, last letter kabhi clip nahi hogi
-      const triggerPoint = windowHeight * 0.8;  // footer 20% visible hone ke baad shuru
-      const range = windowHeight * 0.35;         // sirf 35% scroll mein poora complete
+     
+      const triggerPoint = windowHeight * 0.8;  
+      const range = windowHeight * 0.35;         
 
       const progress = Math.max(
         0,
