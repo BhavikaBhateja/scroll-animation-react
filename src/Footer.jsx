@@ -1,6 +1,3 @@
-
-
-
 import React, { useState, useEffect, useRef } from 'react';
 
 const Footer = () => {
@@ -15,52 +12,59 @@ const Footer = () => {
     }))
   );
 
- useEffect(() => {
-  const updateAnimation = () => {
-    if (!footerRef.current) return;
+  useEffect(() => {
+    const updateAnimation = () => {
+      if (!footerRef.current) return;
 
-    const rect = footerRef.current.getBoundingClientRect();
-    const windowHeight = window.innerHeight;
+      const rect = footerRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
 
-    const progress = Math.max(
-      0,
-      Math.min(1, (windowHeight - rect.top) / windowHeight)
-    );
+      // Footer tab visible hota hai jab rect.top < windowHeight
+      // Hum progress tab shuru karte hain jab footer ka 20% visible ho
+      // aur sirf windowHeight ka 35% scroll range use karte hain
+      // → animation jaldi complete hogi, last letter kabhi clip nahi hogi
+      const triggerPoint = windowHeight * 0.8;  // footer 20% visible hone ke baad shuru
+      const range = windowHeight * 0.35;         // sirf 35% scroll mein poora complete
 
-    // 🎬 Animate big letters (bottom reveal upward)
-    const newStates = letters.map((_, index) => {
-      const delay = index * 0.05;
-      const letterProgress = Math.max(
+      const progress = Math.max(
         0,
-        Math.min(1, (progress - delay) / 0.4)
+        Math.min(1, (triggerPoint - rect.top) / range)
       );
 
-      return {
-        transform: `translateY(${(1 - letterProgress) * 120}%)`,
-        opacity: letterProgress
-      };
-    });
+      // Animate big letters (bottom reveal upward)
+      const newStates = letters.map((_, index) => {
+        // Stagger kam kiya — 0.05 → 0.03, range bhi 0.4 → 0.25
+        const delay = index * 0.03;
+        const letterProgress = Math.max(
+          0,
+          Math.min(1, (progress - delay) / 0.25)
+        );
 
-    setLetterStates(newStates);
+        return {
+          transform: `translateY(${(1 - letterProgress) * 120}%)`,
+          opacity: letterProgress
+        };
+      });
 
-    // 🎬 Animate heading from top downward
-    const heading = document.querySelector(".footer-header");
-    if (heading) {
-      heading.style.transform = `translateY(${(1 - progress) * -120}px)`;
-      heading.style.opacity = progress;
-    }
-  };
+      setLetterStates(newStates);
 
-  window.addEventListener("scroll", updateAnimation);
-  window.addEventListener("resize", updateAnimation);
-  updateAnimation();
+      // Animate heading from top downward
+      const heading = document.querySelector(".footer-header");
+      if (heading) {
+        heading.style.transform = `translateY(${(1 - progress) * -120}px)`;
+        heading.style.opacity = progress;
+      }
+    };
 
-  return () => {
-    window.removeEventListener("scroll", updateAnimation);
-    window.removeEventListener("resize", updateAnimation);
-  };
-}, []);
+    window.addEventListener("scroll", updateAnimation);
+    window.addEventListener("resize", updateAnimation);
+    updateAnimation();
 
+    return () => {
+      window.removeEventListener("scroll", updateAnimation);
+      window.removeEventListener("resize", updateAnimation);
+    };
+  }, []);
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -75,24 +79,33 @@ const Footer = () => {
         .footer-container {
           position: relative;
           background: linear-gradient(135deg, #b91c1c 0%, #991b1b 50%, #7f1d1d 100%);
-          min-height: 100vh;
           overflow: hidden;
         }
 
         .footer-content {
           position: relative;
           z-index: 2;
-          padding: 60px 50px 20px;
+          padding: 60px 50px 0px;
           max-width: 1400px;
           margin: 0 auto;
         }
 
-       .footer-header {
-  margin-bottom: 40px;
-  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-              opacity 0.6s ease;
-  will-change: transform, opacity;
-}
+        .parallax-clip {
+          overflow: hidden;
+          padding-top: 0.2em;
+          padding-bottom: 0.12em;
+          /* Footer content ke padding se bahar nikalo */
+          margin-left: -50px;
+          margin-right: -50px;
+          padding-left: 50px;
+        }
+
+        .footer-header {
+          margin-bottom: 40px;
+          transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+                      opacity 0.6s ease;
+          will-change: transform, opacity;
+        }
 
         .brand-title {
           font-size: 2.5rem;
@@ -108,7 +121,6 @@ const Footer = () => {
           letter-spacing: 1px;
         }
 
-        /* Reduced spacing */
         .footer-nav {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -146,19 +158,20 @@ const Footer = () => {
           color: #4a4a4a;
         }
 
-        /* Reduced height */
         .parallax-container {
           position: relative;
-          height: 280px;
-          overflow: hidden;
-          margin-bottom: 10px;
+          /* No fixed height, no overflow hidden — text natural height lega */
+          overflow: visible;
+          margin-bottom: 0;
+          /* Animation ke liye letters neeche se aate hain, clip karna zaroori */
+          clip-path: inset(0 0 0 0);
         }
 
         .parallax-text {
-          position: absolute;
-          bottom: 0;
+          position: relative;
           left: 0;
-          font-size: 18rem;
+          /* Responsive font-size */
+          font-size: clamp(5rem, 18vw, 18rem);
           font-weight: 900;
           color: #1a1a1a;
           line-height: 0.85;
@@ -166,6 +179,8 @@ const Footer = () => {
           text-transform: lowercase;
           white-space: nowrap;
           display: flex;
+          /* Padding bottom thoda taaki descenders clip na ho */
+          padding-bottom: 0.1em;
         }
 
         .parallax-text span {
@@ -174,9 +189,10 @@ const Footer = () => {
                       opacity 0.5s ease;
         }
 
+        /* FIX: border-top se seedha shuru, koi gap nahi */
         .footer-bottom {
           border-top: 1px solid rgba(0, 0, 0, 0.2);
-          padding-top: 20px;
+          padding: 20px 0;
           display: flex;
           justify-content: space-between;
           align-items: center;
@@ -256,19 +272,21 @@ const Footer = () => {
             </div>
           </nav>
 
-          <div className="parallax-container">
-            <div className="parallax-text">
-              {letters.map((letter, index) => (
-                <span
-                  key={index}
-                  style={{
-                    transform: letterStates[index].transform,
-                    opacity: letterStates[index].opacity
-                  }}
-                >
-                  {letter}
-                </span>
-              ))}
+          <div className="parallax-clip">
+            <div className="parallax-container">
+              <div className="parallax-text">
+                {letters.map((letter, index) => (
+                  <span
+                    key={index}
+                    style={{
+                      transform: letterStates[index].transform,
+                      opacity: letterStates[index].opacity
+                    }}
+                  >
+                    {letter}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
 
