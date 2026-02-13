@@ -31,7 +31,16 @@ body {
 
 /* ── Content Section ── */
 .content-section {
-  padding: 2rem;
+  background: #dadada;
+  color: #1d1d1b;
+  font-family: SuisseIntl, -apple-system, BlinkMacSystemFont,
+               "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+
+  font-size: max(12px, 4.6153846154vw);
+  line-height: 1.2222222222;
+
+  padding: 8vh 3vw;
 }
 
 .about-label {
@@ -49,9 +58,8 @@ body {
 }
 
 .animated-text {
-  font-size: clamp(1.5rem, 5vw, 4.5rem);
-  line-height: 1.3;
-  font-weight: bold;
+  font-size: 1em;   /* inherits viewport-based size */
+  font-weight: 600;
 }
 
 .word {
@@ -208,7 +216,7 @@ body {
 
 /* Title — same size for both panels, clips naturally in 20% */
 .image-title {
-  font-size: 4rem;
+  font-size: 6rem;
   font-weight: 700;
   color: #fff;
   letter-spacing: 0.05em;
@@ -329,4 +337,62 @@ body {
 
   .image-title { font-size: 1.8rem; }
   .image-overlay { padding: 1rem; }
+}
+
+
+/* Add to your existing styles */
+
+.word.falling {
+  animation: subtleJiggle 0.3s ease-in-out forwards;
+}
+
+@keyframes subtleJiggle {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  25% {
+    opacity: 0.8;
+    transform: translateY(-2px);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translateY(3px);
+  }
+  75% {
+    opacity: 0.4;
+    transform: translateY(-1px);
+  }
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+}
+
+/* Optional: Slightly different jiggle for highlight words */
+.word.highlight.falling {
+  animation: subtleJiggleHighlight 0.35s ease-in-out forwards;
+}
+
+@keyframes subtleJiggleHighlight {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  20% {
+    opacity: 0.85;
+    transform: translateY(-3px);
+  }
+  50% {
+    opacity: 0.65;
+    transform: translateY(4px);
+  }
+  80% {
+    opacity: 0.45;
+    transform: translateY(-2px);
+  }
+  100% {
+    opacity: 0.4;
+    transform: translateY(0);
+  }
 }
